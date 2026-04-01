@@ -1,4 +1,43 @@
-const getEmailHTML = () => {
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const getEmailHTML = (content = {}) => {
+  const h = content.header || {};
+  const b = content.body || {};
+  const skills = content.skills || {};
+  const highlights = Array.isArray(content.highlights) ? content.highlights : [];
+  const cta = content.cta || "My detailed resume is attached. I'd welcome the opportunity to discuss how I can contribute to your team.";
+  const f = content.footer || {};
+
+  const name    = escapeHtml(h.name  || 'Vikas Parmar');
+  const role    = escapeHtml(h.role  || 'Software Engineer — 2.3 Years Experience');
+  const email   = escapeHtml(h.email || 'iamvikas.j30n@gmail.com');
+  const phone   = escapeHtml(h.phone || '+91-9424516638');
+  const greeting = escapeHtml(b.greeting || 'Dear Hiring Manager,');
+  const intro    = escapeHtml(b.intro   || '');
+  const current  = escapeHtml(b.current || '');
+  const footerName  = escapeHtml(f.name  || name);
+  const footerRole  = escapeHtml(f.role  || '');
+  const footerEmail = escapeHtml(f.email || email);
+  const footerPhone = escapeHtml(f.phone || phone);
+
+  const primaryBadges = (skills.primary || []).map(s =>
+    `<span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">${escapeHtml(s)}</span>`
+  ).join('');
+
+  const secondaryBadges = (skills.secondary || []).map(s =>
+    `<span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">${escapeHtml(s)}</span>`
+  ).join('');
+
+  const highlightRows = highlights.map(hl =>
+    `<tr><td style="padding:6px 0;font-size:14px;color:#475569;line-height:1.5;">${escapeHtml(hl)}</td></tr>`
+  ).join('');
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -16,15 +55,15 @@ const getEmailHTML = () => {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0ea5e9 100%);padding:40px 40px 30px;text-align:center;">
-              <h1 style="margin:0;font-size:28px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Vikas Parmar</h1>
-              <p style="margin:8px 0 0;font-size:14px;color:#93c5fd;letter-spacing:1px;text-transform:uppercase;">Software Engineer — 2.3 Years Experience</p>
+              <h1 style="margin:0;font-size:28px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">${name}</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:#93c5fd;letter-spacing:1px;text-transform:uppercase;">${role}</p>
               <table role="presentation" cellpadding="0" cellspacing="0" style="margin:20px auto 0;" align="center">
                 <tr>
                   <td style="padding:0 12px;">
-                    <a href="mailto:iamvikas.j30n@gmail.com" style="color:#93c5fd;font-size:13px;text-decoration:none;">✉ iamvikas.j30n@gmail.com</a>
+                    <a href="mailto:${email}" style="color:#93c5fd;font-size:13px;text-decoration:none;">✉ ${email}</a>
                   </td>
                   <td style="border-left:1px solid rgba(255,255,255,0.3);padding:0 12px;">
-                    <span style="color:#93c5fd;font-size:13px;">☎ +91-9424516638</span>
+                    <span style="color:#93c5fd;font-size:13px;">☎ ${phone}</span>
                   </td>
                 </tr>
               </table>
@@ -35,13 +74,13 @@ const getEmailHTML = () => {
           <tr>
             <td style="padding:36px 40px 20px;">
               <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#334155;">
-                Dear Hiring Manager,
+                ${greeting}
               </p>
               <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#334155;">
-                I'm <strong>Vikas Parmar</strong>, a Software Engineer with <strong>2.3 years</strong> of hands-on experience building scalable backend systems. I'm writing to express my strong interest in a Software Engineer role at your organization.
+                ${intro}
               </p>
               <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#334155;">
-                I currently work at <strong>Supy (Dubai, Remote)</strong> on the core platform team, building multi-tenant inventory features in <strong>NestJS + MongoDB</strong> serving 3000+ retail locations. I've independently owned and shipped production systems including transaction management, bulk data pipelines, and branch-cloning workflows.
+                ${current}
               </p>
             </td>
           </tr>
@@ -57,26 +96,7 @@ const getEmailHTML = () => {
                 </tr>
                 <tr>
                   <td style="padding:8px 24px 20px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td width="50%" style="padding:4px 0;vertical-align:top;">
-                          <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">TypeScript</span>
-                                                   <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">Java</span>
-                          <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">JavaScript</span>
-                          <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">Node.js</span>
-                          <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">NestJS</span>
-                          <span style="display:inline-block;background:#0ea5e9;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">React.js</span>
-                        </td>
-                        <td width="50%" style="padding:4px 0;vertical-align:top;">
-                          <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">MongoDB</span>
-                           <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">MySQL</span>
-                          <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">Redis</span>
-                          <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">NATS</span>
-                          <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">WebSockets</span>
-                          <span style="display:inline-block;background:#1e3a5f;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin:3px 2px;">REST APIs</span>
-                        </td>
-                      </tr>
-                    </table>
+                    <div style="padding:4px 0;">${primaryBadges}${secondaryBadges}</div>
                   </td>
                 </tr>
               </table>
@@ -95,21 +115,7 @@ const getEmailHTML = () => {
                 <tr>
                   <td style="padding:8px 24px 20px;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="padding:6px 0;font-size:14px;color:#475569;line-height:1.5;">
-                          ▸ Built global TransactionManager with exponential backoff — adopted across 20+ modules
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:6px 0;font-size:14px;color:#475569;line-height:1.5;">
-                          ▸ Shipped bulk recipe upload pipeline — reduced onboarding time by 60%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:6px 0;font-size:14px;color:#475569;line-height:1.5;">
-                          ▸ MCA from NIT Raipur | 400+ DSA problems solved
-                        </td>
-                      </tr>
+                      ${highlightRows}
                     </table>
                   </td>
                 </tr>
@@ -121,7 +127,7 @@ const getEmailHTML = () => {
           <tr>
             <td style="padding:0 40px 32px;text-align:center;">
               <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#334155;">
-                My detailed resume is attached. I'd welcome the opportunity to discuss how I can contribute to your team.
+                ${escapeHtml(cta)}
               </p>
             </td>
           </tr>
@@ -132,11 +138,11 @@ const getEmailHTML = () => {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <p style="margin:0;font-size:14px;font-weight:600;color:#0f172a;">Vikas Parmar</p>
-                    <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Software Engineer | NIT Raipur '24</p>
+                    <p style="margin:0;font-size:14px;font-weight:600;color:#0f172a;">${footerName}</p>
+                    <p style="margin:4px 0 0;font-size:13px;color:#64748b;">${footerRole}</p>
                     <p style="margin:4px 0 0;font-size:13px;color:#64748b;">
-                      <a href="mailto:iamvikas.j30n@gmail.com" style="color:#0ea5e9;text-decoration:none;">iamvikas.j30n@gmail.com</a>
-                      &nbsp;•&nbsp; +91-9424516638
+                      <a href="mailto:${footerEmail}" style="color:#0ea5e9;text-decoration:none;">${footerEmail}</a>
+                      &nbsp;•&nbsp; ${footerPhone}
                     </p>
                   </td>
                 </tr>
@@ -152,8 +158,8 @@ const getEmailHTML = () => {
 </html>`;
 };
 
-const getEmailSubject = () => {
-  return 'Application for Software Engineer Role — Vikas Parmar | 2.3 Years Experience';
+const getEmailSubject = (content = {}) => {
+  return content.subject || 'Application for Software Engineer Role — Vikas Parmar | 2.3 Years Experience';
 };
 
 module.exports = { getEmailHTML, getEmailSubject };
