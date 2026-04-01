@@ -28,8 +28,13 @@ const sendResumeMail = async (recipientEmail) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // STARTTLS — required on most cloud platforms (port 465 is blocked)
     auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 
   // Fetch dynamic content from DB, deep-merge with defaults so empty fields fall back
