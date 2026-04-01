@@ -20,7 +20,7 @@ app.options('*', cors()); // handle preflight
 app.use(express.json());
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // API routes
 app.use('/api/mail', mailRoutes);
