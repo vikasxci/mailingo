@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
 const mailRoutes = require('./routes/mail');
+const resumeRoutes = require('./routes/resume');
+const contentRoutes = require('./routes/content');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 // CORS (allow all origins)
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
   credentials: false,
   optionsSuccessStatus: 204,
@@ -24,11 +26,8 @@ app.use(express.json());
 
 // API routes
 app.use('/api/mail', mailRoutes);
-
-// Fallback to frontend
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
-});
+app.use('/api/resume', resumeRoutes);
+app.use('/api/content', contentRoutes);
 
 // Start
 connectDB().then(() => {
