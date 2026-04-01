@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Mail = require('../models/Mail');
 const { sendResumeMail } = require('../services/mailService');
-const { getEmailSubject } = require('../templates/emailTemplate');
 
 // Send mail
 router.post('/send', async (req, res) => {
@@ -18,11 +17,11 @@ router.post('/send', async (req, res) => {
   }
 
   try {
-    await sendResumeMail(email.trim());
+    const { subject } = await sendResumeMail(email.trim());
 
     const record = await Mail.create({
       recipientEmail: email.trim(),
-      subject: getEmailSubject(),
+      subject,
       status: 'sent',
     });
 
@@ -34,7 +33,7 @@ router.post('/send', async (req, res) => {
   } catch (error) {
     await Mail.create({
       recipientEmail: email.trim(),
-      subject: getEmailSubject(),
+      subject: 'Application for Software Engineer Role',
       status: 'failed',
       error: error.message,
     });
