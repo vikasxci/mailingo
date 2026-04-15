@@ -88,7 +88,7 @@ const sendResumeMail = async (recipientEmail) => {
     subject,
     html: getEmailHTML(content),
     attachments: resumeUrl
-      ? [{ filename: 'Vikas_Parmar_Resume.pdf', path: resumeUrl, contentType: 'application/pdf' }]
+      ? [{ filename: 'Vikas_Parmar_Resume.pdf', url: resumeUrl, contentType: 'application/pdf' }]
       : [],
   };
 
