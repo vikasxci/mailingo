@@ -32,9 +32,20 @@ const sendResumeMail = async (recipientEmail) => {
     port: 587,
     secure: false, // STARTTLS — required on most cloud platforms (port 465 is blocked)
     auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
+    pool: {
+      maxConnections: 1,
+      maxMessages: Infinity,
+      rateDelta: 1000,
+      rateLimit: 5,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    logger: true,
+    debug: true,
   });
 
   // Fetch dynamic content from DB, deep-merge with defaults so empty fields fall back
